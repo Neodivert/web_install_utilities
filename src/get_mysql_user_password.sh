@@ -8,7 +8,7 @@
 
 SCRIPT_NAME=$0
 MYSQL_COMMAND=$1
-mysql_password=0
+mysql_password=""
 
 
 # Auxiliar function - Read MySQL password from user
@@ -22,8 +22,8 @@ function read_mysql_password(){
 
 	# Read mysql password from user and return it.
 	read -e -s -r -p "$user_msg" mysql_password
-	printf "\n"
-	return $mysql_password
+
+	echo $mysql_password
 }
 
 
@@ -33,12 +33,12 @@ function read_mysql_password(){
 function check_mysql_password(){
 	local mysql_password=$1
 	local mysql_command=$2
-
+	
 	# Check the previous password by trying to connect to MySQL server and checking
 	# the return value.
-	MYSQL_COMMAND -u root --password=$mysql_password -e "exit" >/dev/null 2>&1
+	"$mysql_command" --user="root" --password="$mysql_password" -e "exit" >/dev/null 2>&1
 
-	return $?
+	echo $?
 }
 
 
@@ -55,12 +55,12 @@ fi
 # Read the MySQL password from user.
 mysql_password=`read_mysql_password`
 
-# Keep asking the user for his/her password
-while [[ $( check_mysql_password ) -ne 0 ]] ;
+# Keep asking the user for his/her password until a right one is writen.
+while [[ $( check_mysql_password "$mysql_password" "$MYSQL_COMMAND" ) -ne 0 ]] ;
 do
-	printf "Wrong password\n"
+	printf "\nWrong password!\n"
 
 	mysql_password=`read_mysql_password`
 done
 
-return "$mysql_password"
+echo "$mysql_password"
