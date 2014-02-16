@@ -58,7 +58,7 @@ mysql_password=`read_mysql_password`
 # Keep asking the user for his/her password until a right one is writen.
 while [[ $( check_mysql_password "$mysql_password" "$MYSQL_COMMAND" ) -ne 0 ]] ;
 do
-	printf "\nWrong password!\n"
+	printf "\nWrong password!\n" 1>&2
 
 	mysql_password=`read_mysql_password`
 done
