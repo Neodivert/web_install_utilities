@@ -31,8 +31,9 @@ if [ $# -ne $N_EXPECTED_ARGUMENTS ]; then
 fi
 
 # Check if user gave us a sql file that exists.
-if [ ! -f SQL_FILE ]; then
+if [ ! -f $SQL_FILE ]; then
 	printf "ERROR: file [%s] not found\n" $SQL_FILE 1>&2
+	exit 1
 fi
 
 # Create the database
